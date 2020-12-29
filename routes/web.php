@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KtpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
+
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
+    Route::get('/dashboard', function() {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::get('/crud', [KtpController::class, 'index'])->name('crud');
+    Route::post('/filterktp', [KtpController::class, 'filter'])->name('filterktp');
+    Route::post('/storektp', [KtpController::class, 'store'])->name('storektp');
+    Route::post('/updatektp/{id}', [KtpController::class, 'update']);
+    Route::post('/deletektp/{id}', [KtpController::class, 'destroy']);
+    Route::post('/changeprov', [KtpController::class, 'changeprov'])->name('changeprov');
+ 
+});
+
+// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+//     return view('dashboard');
+// })->name('dashboard');
