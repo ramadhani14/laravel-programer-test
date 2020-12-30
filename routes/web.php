@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KtpController;
+use App\Http\Middleware\CheckRole;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,12 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
-    Route::get('/dashboard', function() {
-        return view('dashboard');
-    })->name('dashboard');
+
+    Route::middleware([CheckRole::class])->group(function(){
+        Route::get('/dashboard', function() {
+            return view('dashboard');
+        })->name('dashboard');
+    });
 
     Route::get('/crud', [KtpController::class, 'index'])->name('crud');
     Route::post('/filterktp', [KtpController::class, 'filter'])->name('filterktp');
